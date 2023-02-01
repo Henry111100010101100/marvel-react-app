@@ -11,32 +11,25 @@ class RandomChar extends Component {
         this.onUpdChar();
     }
     state = {
-        name: null,
-        descr: null,
-        thumbnail: null,
-        homepage: null,
-        wiki: null
+        char: {}
     }
 
     marvelService = new MarvelService();
 
+    onCharLoaded = (char) => {
+        this.setState({char});
+    }
 
     onUpdChar = () => {
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
         this.marvelService
-        .getCharacter(id).then(res => {
-            this.setState({
-                name: res.data.results[0].name,
-                descr: res.data.results[0].description,
-                thumbnail: res.data.results[0].thumbnail.path + "." + res.data.results[0].thumbnail.extension,
-                homepage: res.data.results[0].urls[0].url,
-                wiki: res.data.results[0].urls[1].url
-            })
-        })
+        .getCharacter(id)
+        .then(this.onCharLoaded)
     }
 
     render() {
-        const {name, descr, thumbnail, homepage, wiki} = this.state;
+        const {char: {name, descr, thumbnail, homepage, wiki}} = this.state;
+
         return (
             <div className="randomchar">
                 <div className="randomchar__block">
