@@ -6,7 +6,6 @@ import Spinner from '../spinner/Spinner';
 import Skeleton from '../skeleton/Skeleton'
 
 import './charInfo.scss';
-import thor from '../../resources/img/thor.jpeg';
 
 class CharInfo extends Component {
     
