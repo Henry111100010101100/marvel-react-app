@@ -4,7 +4,6 @@ import Spinner from '../spinner/Spinner';
 import MarvelService from '../../services/MarvelService';
 
 import './charList.scss';
-import abyss from '../../resources/img/abyss.jpg';
 
 class CharList extends Component {
 
