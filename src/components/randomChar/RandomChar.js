@@ -4,7 +4,6 @@ import Spinner from '../spinner/Spinner';
 import MarvelService from '../../services/MarvelService';
 
 import './randomChar.scss';
-import thor from '../../resources/img/thor.jpeg';
 import mjolnir from '../../resources/img/mjolnir.png';
 
 class RandomChar extends Component {
