@@ -61,16 +61,39 @@ class CharList extends Component {
         })
     }
 
+    cardRefs = [];
+
+    setRef = (ref) => {
+        this.cardRefs.push(ref)
+    }
+
+    onFocusCard = (id) => {
+        this.cardRefs.forEach(item => item.classList.remove('char__item_selected'));
+        this.cardRefs[id].classList.add('char__item_selected');
+        this.cardRefs[id].focus();
+    }
+
     renderCards = (arr) => {
-        const cards = arr.map(item => {
+        const cards = arr.map((item,i) => {
             const nameFontSize = item.name.length > 30 ? {fontSize: "21px"} : null;
             const noAvailableImg = item.thumbnail === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg" ? {objectFit: "unset"} : null;
             
             return(
                 <li 
                 className="char__item" 
+                tabIndex={0}
                 key={item.id}
-                onClick={() => this.props.onSelectedChar(item.id)}>
+                ref={this.setRef}
+                onClick={() => {
+                    this.props.onSelectedChar(item.id);
+                    this.onFocusCard(i)
+                }}
+                onKeyDown={(e) => {
+                    if (e.code === "Enter") {
+                        this.props.onSelectedChar(item.id);
+                        this.onFocusCard(i);
+                    }
+                }}>
                     <img src={item.thumbnail} alt={item.name} style={noAvailableImg}/>
                     <div className="char__name" style={nameFontSize}>{item.name}</div>
                 </li>
