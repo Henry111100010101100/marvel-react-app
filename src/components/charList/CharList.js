@@ -3,36 +3,27 @@ import PropTypes from 'prop-types';
 
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 
 import './charList.scss';
 
 const CharList = (props) => {
 
     const [charList, setCharList] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
     const [newItemsLoading, setNewItemsLoading] = useState(false);
     const [offset, setOffset] = useState(200);
     const [charEnded, setCharEnded] = useState(false);
-
-    const marvelService = new MarvelService();
+    const {loading, error, getAllCharacters} = useMarvelService();
 
     useEffect(() => {
-        onRequestLoad()
+        onRequestLoad(offset, true)
     }, [])
 
-    const onRequestLoad = (offset) => {
-        onCharListLoading();
-
-        marvelService
-        .getAllCharacters(offset)
-        .then(onCharListLoaded)
-        .catch(onError)
-    }
-
-    const onCharListLoading = () => {
-        setNewItemsLoading(true)
+    const onRequestLoad = (offset, initial) => {
+        initial ? setNewItemsLoading(false) : setNewItemsLoading(true)
+        
+        getAllCharacters(offset)
+            .then(onCharListLoaded)
     }
 
     const onCharListLoaded = (newCharList) => {
@@ -42,15 +33,9 @@ const CharList = (props) => {
         }
 
         setCharList(charList => [...charList, ...newCharList]);
-        setLoading(false);
         setNewItemsLoading(false);
         setOffset(offset => offset +9);
         setCharEnded(ended);
-    }
-    
-    const onError = () => {
-        setLoading(false);
-        setError(true);
     }
 
     const cardRefs = useRef([]);
@@ -63,7 +48,7 @@ const CharList = (props) => {
 
     const renderCards = (arr) => {
         const cards = arr.map((item,i) => {
-            const nameFontSize = item.name.length > 30 ? {fontSize: "21px"} : null;
+            const charNameFontSize = item.name.length > 30 ? {fontSize: "21px"} : null;
             const noAvailableImg = item.thumbnail === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg" ? {objectFit: "unset"} : null;
             
             return(
@@ -83,7 +68,7 @@ const CharList = (props) => {
                     }
                 }}>
                     <img src={item.thumbnail} alt={item.name} style={noAvailableImg}/>
-                    <div className="char__name" style={nameFontSize}>{item.name}</div>
+                    <div className="char__name" style={charNameFontSize}>{item.name}</div>
                 </li>
             )
         })
@@ -98,8 +83,7 @@ const CharList = (props) => {
     const cardsList = renderCards(charList);
 
     const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error) ? cardsList : null;
+    const spinner = loading && !newItemsLoading ? <Spinner/> : null;
 
     const CharEnd = charEnded ? "No more characters" : null
 
@@ -107,7 +91,7 @@ const CharList = (props) => {
         <div className="char__list">
             {errorMessage}
             {spinner}
-            {content}
+            {cardsList}
 
             <button 
                 className="button button__main button__long"
