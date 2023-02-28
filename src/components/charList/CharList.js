@@ -85,7 +85,7 @@ const CharList = (props) => {
     const errorMessage = error ? <ErrorMessage/> : null;
     const spinner = loading && !newItemsLoading ? <Spinner/> : null;
 
-    const CharEnd = charEnded ? "No more characters" : null
+    const сharFinish = charEnded ? "No more characters" : null
 
     return (
         <div className="char__list">
@@ -101,7 +101,7 @@ const CharList = (props) => {
                     <div className="inner">load more</div>
             </button>
             <p style={{textAlign: "center", marginTop: "20px", color: "red", fontSize: "26px"}}>
-                {CharEnd}
+                {сharFinish}
             </p>
         </div>
     )
