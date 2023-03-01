@@ -52,7 +52,7 @@ const  useMarvelService = () => {
         }
     }
 
-    return {loading, error, clearError, getAllCharacters, getCharacter, getAllComics}
+    return {loading, error, clearError, getAllCharacters, getCharacter, getAllComics, getComics}
 }
 
 export default useMarvelService;
