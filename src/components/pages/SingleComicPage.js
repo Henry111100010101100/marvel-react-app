@@ -1,7 +1,13 @@
-import './singleComic.scss';
+import { useState, useEffect } from 'react';
+
+import useMarvelService from '../../services/MarvelService';
+import ErrorMessage from '../errorMessage/ErrorMessage';
+import Spinner from '../spinner/Spinner';
+
+import './singleComicPage.scss';
 import xMen from '../../resources/img/x-men.png';
 
-const SingleComic = () => {
+export const SingleComicPage = () => {
     return (
         <div className="single-comic">
             <img src={xMen} alt="x-men" className="single-comic__img"/>
@@ -16,5 +22,3 @@ const SingleComic = () => {
         </div>
     )
 }
-
-export default SingleComic;
