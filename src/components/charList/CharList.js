@@ -85,7 +85,7 @@ const CharList = (props) => {
     const errorMessage = error ? <ErrorMessage/> : null;
     const spinner = loading && !newItemsLoading ? <Spinner/> : null;
 
-    const сharFinish = charEnded ? "No more characters" : null
+    const сharFinish = charEnded ? "No more characters" : null;
 
     return (
         <div className="char__list">
