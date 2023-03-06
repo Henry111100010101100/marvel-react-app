@@ -7,7 +7,7 @@ import Spinner from '../spinner/Spinner';
 
 import './singleComicPage.scss';
 
-export const SingleComicPage = () => {
+const SingleComicPage = () => {
 
     const {comicId} = useParams();
     const [comic, setComic] = useState(null);
@@ -58,3 +58,5 @@ const View = ({comic}) => {
         </div>
     )
 }
+
+export default SingleComicPage;
