@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, createRef } from 'react';
 import PropTypes from 'prop-types';
 
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
 import useMarvelService from '../../services/MarvelService';
 
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './charList.scss';
 
 const CharList = (props) => {
@@ -13,15 +14,15 @@ const CharList = (props) => {
     const [newItemsLoading, setNewItemsLoading] = useState(false);
     const [offset, setOffset] = useState(200);
     const [charEnded, setCharEnded] = useState(false);
-    const {loading, error, getAllCharacters} = useMarvelService();
+    const { loading, error, getAllCharacters } = useMarvelService();
 
     useEffect(() => {
-        onRequestLoad(offset, true)
+        onRequestLoad(offset, true);
     }, [])
 
     const onRequestLoad = (offset, initial) => {
-        initial ? setNewItemsLoading(false) : setNewItemsLoading(true)
-        
+        initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
+
         getAllCharacters(offset)
             .then(onCharListLoaded)
     }
@@ -34,7 +35,7 @@ const CharList = (props) => {
 
         setCharList(charList => [...charList, ...newCharList]);
         setNewItemsLoading(false);
-        setOffset(offset => offset +9);
+        setOffset(offset => offset + 9);
         setCharEnded(ended);
     }
 
@@ -47,60 +48,65 @@ const CharList = (props) => {
     }
 
     const renderCards = (arr) => {
-        const cards = arr.map((item,i) => {
-            const charNameFontSize = item.name.length > 30 ? {fontSize: "21px"} : null;
-            const noAvailableImg = item.thumbnail === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg" ? {objectFit: "unset"} : null;
-            
-            return(
-                <li 
-                className="char__item" 
-                tabIndex={0}
+        const cards = arr.map((item, i) => {
+            const charNameFontSize = item.name.length > 30 ? { fontSize: "21px" } : null;
+            const noAvailableImg = item.thumbnail === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg" ? { objectFit: "unset" } : null;
+            return (
+                <CSSTransition 
+                timeout={500} 
                 key={item.id}
-                ref={el => cardRefs.current[i] = el}
-                onClick={() => {
-                    props.onSelectedChar(item.id);
-                    onFocusCard(i);
-                }}
-                onKeyDown={(e) => {
-                    if (e.code === "Enter") {
-                        props.onSelectedChar(item.id);
-                        onFocusCard(i);
-                    }
-                }}>
-                    <img src={item.thumbnail} alt={item.name} style={noAvailableImg}/>
-                    <div className="char__name" style={charNameFontSize}>{item.name}</div>
-                </li>
+                classNames="char__item">
+                    <li
+                        className="char__item"
+                        tabIndex={0}
+                        ref={el => cardRefs.current[i] = el}
+                        onClick={() => {
+                            props.onSelectedChar(item.id);
+                            onFocusCard(i);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.code === "Enter") {
+                                props.onSelectedChar(item.id);
+                                onFocusCard(i);
+                            }
+                        }}>
+                        <img src={item.thumbnail} alt={item.name} style={noAvailableImg} />
+                        <div className="char__name" style={charNameFontSize}>{item.name}</div>
+                    </li>
+                </CSSTransition>
             )
         })
 
-        return(
+        return (
             <ul className="char__grid">
-                {cards}
+                <TransitionGroup component={null}>
+                    {cards}
+                </TransitionGroup>
             </ul>
         )
     }
 
     const cardsList = renderCards(charList);
 
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading && !newItemsLoading ? <Spinner/> : null;
+    const errorMessage = error ? <ErrorMessage /> : null;
+    const spinner = loading && !newItemsLoading ? <Spinner /> : null;
 
     const сharFinish = charEnded ? "No more characters" : null;
 
     return (
         <div className="char__list">
-            {errorMessage}
-            {spinner}
-            {cardsList}
+                {errorMessage}
+                {spinner}
+                {cardsList}
 
-            <button 
+            <button
                 className="button button__main button__long"
                 disabled={newItemsLoading}
                 onClick={() => onRequestLoad(offset)}
-                style={{display: charEnded ? "none" : "block"}}>
-                    <div className="inner">load more</div>
+                style={{ display: charEnded ? "none" : "block" }}>
+                <div className="inner">load more</div>
             </button>
-            <p style={{textAlign: "center", marginTop: "20px", color: "red", fontSize: "26px"}}>
+            <p style={{ textAlign: "center", marginTop: "20px", color: "red", fontSize: "26px" }}>
                 {сharFinish}
             </p>
         </div>

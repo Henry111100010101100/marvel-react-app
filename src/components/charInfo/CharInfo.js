@@ -15,17 +15,17 @@ const CharInfo = (props) => {
 
     useEffect(() => {
         updateChar()
-    }, [props.chardId])
+    }, [props.charId])
 
     const updateChar = () => {
-        const {chardId} = props;
+        const {charId} = props;
 
-        if(!chardId) {
+        if(!charId) {
             return;
         }
 
         clearError();
-        getCharacter(chardId)
+        getCharacter(charId)
             .then(onCharLoaded)
     }
 
@@ -90,7 +90,7 @@ const View = ({char}) => {
 }
 
 CharInfo.propTypes = {
-    chardId: PropTypes.number
+    charId: PropTypes.number
 }
 
 export default CharInfo;
