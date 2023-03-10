@@ -15,11 +15,9 @@ const SearchChar = () => {
 
     const onCharLoaded = (char) => {
         setChar(char);
-        console.log(char)
     }
     
     const findChar = (charName) => {
-        console.log(charName);
         clearError();
 
         getCharacterByName(charName)
