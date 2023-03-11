@@ -7,13 +7,32 @@ import useMarvelService from '../../services/MarvelService';
 
 import './comicsList.scss';
 
+const setContent = (process, Component, newItemsLoading) => {
+    switch(process) {
+        case 'waiting':
+            return <Spinner/>;
+            break;
+        case 'loading':
+            return newItemsLoading ? <Component/> : <Spinner/>;
+            break;
+        case 'confirmed':
+            return <Component/>;
+            break;
+        case 'error':
+            return <ErrorMessage/>;
+            break;
+        default:
+            throw new Error ('Unexpected process state');
+    }
+}
+
 const ComicsList = () => {
 
     const [comicsList, setComicsList] = useState([]);
     const [newItemsLoading, setNewItemsLoading] = useState(false);
     const [offset, setOffset] = useState(0);
     const [comicsEnded, setComicsEnded] = useState(false);
-    const {loading, error, getAllComics} = useMarvelService();
+    const {getAllComics, process, setProcess} = useMarvelService();
 
     useEffect(() => {
         onRequestLoad(offset, true)
@@ -24,6 +43,7 @@ const ComicsList = () => {
         
         getAllComics(offset)
             .then(onComicsLoaded)
+            .then(() => setProcess('confirmed'))
     }
 
     const onComicsLoaded = (newComicsList) => {
@@ -60,18 +80,16 @@ const ComicsList = () => {
         )
     }
 
-    const comics = renderComics(comicsList)
+/*     const comics = renderComics(comicsList)
 
     const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading && !newItemsLoading ? <Spinner/> : null;
+    const spinner = loading && !newItemsLoading ? <Spinner/> : null; */
 
     const comicsFinish = comicsEnded ? "No more comics" : null
 
     return (
         <div className="comics__list">
-            {errorMessage}
-            {spinner}
-            {comics}
+            {setContent(process, () => renderComics(comicsList), newItemsLoading)}
             
             <button 
             className="button button__main button__long"
