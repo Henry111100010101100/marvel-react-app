@@ -8,13 +8,32 @@ import useMarvelService from '../../services/MarvelService';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './charList.scss';
 
+const setContent = (process, Component, newItemsLoading) => {
+    switch(process) {
+        case 'waiting':
+            return <Spinner/>;
+            break;
+        case 'loading':
+            return newItemsLoading ? <Component/> : <Spinner/>;
+            break;
+        case 'confirmed':
+            return <Component/>;
+            break;
+        case 'error':
+            return <ErrorMessage/>;
+            break;
+        default:
+            throw new Error ('Unexpected process state');
+    }
+}
+
 const CharList = (props) => {
 
     const [charList, setCharList] = useState([]);
     const [newItemsLoading, setNewItemsLoading] = useState(false);
     const [offset, setOffset] = useState(200);
     const [charEnded, setCharEnded] = useState(false);
-    const { loading, error, getAllCharacters } = useMarvelService();
+    const { getAllCharacters, process, setProcess } = useMarvelService();
 
     useEffect(() => {
         onRequestLoad(offset, true);
@@ -25,6 +44,7 @@ const CharList = (props) => {
 
         getAllCharacters(offset)
             .then(onCharListLoaded)
+            .then(() => setProcess('confirmed'))
     }
 
     const onCharListLoaded = (newCharList) => {
@@ -86,18 +106,16 @@ const CharList = (props) => {
         )
     }
 
-    const cardsList = renderCards(charList);
+    /* const cardsList = renderCards(charList);
 
     const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading && !newItemsLoading ? <Spinner /> : null;
+    const spinner = loading && !newItemsLoading ? <Spinner /> : null; */
 
     const сharFinish = charEnded ? "No more characters" : null;
 
     return (
         <div className="char__list">
-                {errorMessage}
-                {spinner}
-                {cardsList}
+            {setContent(process, () => renderCards(charList), newItemsLoading)}
 
             <button
                 className="button button__main button__long"

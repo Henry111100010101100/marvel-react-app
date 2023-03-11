@@ -14,7 +14,7 @@ const MainPage = () => {
     const [selectedChar, setChar] = useState(null);
 
     const onSelectedChar = (id) => {
-        setChar(id)
+        setChar(id);
     }
 
     return(
