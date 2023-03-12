@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, createRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -12,16 +12,12 @@ const setContent = (process, Component, newItemsLoading) => {
     switch(process) {
         case 'waiting':
             return <Spinner/>;
-            break;
         case 'loading':
             return newItemsLoading ? <Component/> : <Spinner/>;
-            break;
         case 'confirmed':
             return <Component/>;
-            break;
         case 'error':
             return <ErrorMessage/>;
-            break;
         default:
             throw new Error ('Unexpected process state');
     }
@@ -37,6 +33,7 @@ const CharList = (props) => {
 
     useEffect(() => {
         onRequestLoad(offset, true);
+        // eslint-disable-next-line
     }, [])
 
     const onRequestLoad = (offset, initial) => {
@@ -106,17 +103,16 @@ const CharList = (props) => {
         )
     }
 
-    /* const cardsList = renderCards(charList);
-
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading && !newItemsLoading ? <Spinner /> : null; */
+    const content = useMemo(() => {
+        return setContent(process, () => renderCards(charList), newItemsLoading)
+        // eslint-disable-next-line
+    }, [process]);
 
     const сharFinish = charEnded ? "No more characters" : null;
 
     return (
         <div className="char__list">
-            {setContent(process, () => renderCards(charList), newItemsLoading)}
-
+            {content}
             <button
                 className="button button__main button__long"
                 disabled={newItemsLoading}

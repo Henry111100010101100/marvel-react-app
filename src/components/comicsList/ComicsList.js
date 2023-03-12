@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {Link} from "react-router-dom";
 
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -11,16 +11,12 @@ const setContent = (process, Component, newItemsLoading) => {
     switch(process) {
         case 'waiting':
             return <Spinner/>;
-            break;
         case 'loading':
             return newItemsLoading ? <Component/> : <Spinner/>;
-            break;
         case 'confirmed':
             return <Component/>;
-            break;
         case 'error':
             return <ErrorMessage/>;
-            break;
         default:
             throw new Error ('Unexpected process state');
     }
@@ -36,6 +32,7 @@ const ComicsList = () => {
 
     useEffect(() => {
         onRequestLoad(offset, true)
+        // eslint-disable-next-line
     }, [])
 
     const onRequestLoad = (offset, initial) => {

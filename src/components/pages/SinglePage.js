@@ -15,6 +15,7 @@ const SinglePage = ({Component, dataType}) => {
 
     useEffect(() => {
         updateData();
+        // eslint-disable-next-line
     }, [id])
 
     const updateData = () => {
@@ -27,6 +28,8 @@ const SinglePage = ({Component, dataType}) => {
             case "character":
                 getCharacter(id).then(onDataLoaded).then(() => setProcess('confirmed'))
                 break;
+            default:
+                throw new Error ("Unexpected data. Can't find necessary page");
         }
     }
 
